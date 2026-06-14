@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.9.dtd">
+
+<!--
+    TestNG Suite Configuration File
+    This is the MASTER control file for your test execution.
+    Maven Surefire Plugin reads this file when you run: mvn test
+-->
+<suite name="E-Commerce Automation Suite" verbose="1">
+
+    <!--
+        verbose="1" means TestNG prints test results to console
+        verbose="2" would print even more detail
+    -->
+
+    <test name="Login Tests">
+        <classes>
+            <!-- Each class tag adds a test class to this run -->
+            <class name="com.ecommerce.tests.LoginTest"/>
+        </classes>
+    </test>
+
+</suite>

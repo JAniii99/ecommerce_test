@@ -1,17 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>ecommerce_test</artifactId>
+    <!-- ==================== PROJECT IDENTITY ==================== -->
+    <!-- This is WHO your project is. Like a name tag. -->
+    <groupId>com.ecommerce</groupId>
+    <artifactId>ecommerce-automation</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
+    <name>E-Commerce Test Automation Framework</name>
+    <description>Selenium Java TestNG automation framework for automationexercise.com</description>
+
+    <!-- ==================== GLOBAL PROPERTIES ==================== -->
+    <!-- Define versions in one place. Easy to upgrade later. -->
     <properties>
+        <java.version>17</java.version>
+        <selenium.version>4.18.1</selenium.version>
+        <testng.version>7.9.0</testng.version>
+        <webdrivermanager.version>5.7.0</webdrivermanager.version>
+        <extentreports.version>5.1.1</extentreports.version>
+        <log4j.version>2.23.0</log4j.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <!-- ==================== DEPENDENCIES ==================== -->
+    <!-- These are the actual libraries Maven will download -->
+    <dependencies>
+
+        <!-- 1. SELENIUM WEBDRIVER -->
+        <!-- The core library that controls the browser -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+
+        <!-- 2. WEBDRIVERMANAGER -->
+        <!-- Automatically downloads the correct ChromeDriver version -->
+        <!-- No more manual driver downloads! -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdrivermanager.version}</version>
+        </dependency>
+
+        <!-- 3. TESTNG -->
+        <!-- Test framework: runs tests, handles assertions, generates basic reports -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+
+        <!-- 4. EXTENT REPORTS -->
+        <!-- Beautiful HTML test reports with screenshots -->
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>${extentreports.version}</version>
+        </dependency>
+
+        <!-- 5. LOG4J API -->
+        <!-- Logging framework - records what your tests are doing -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <!-- 6. LOG4J CORE -->
+        <!-- The actual implementation of Log4j -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <!-- 7. APACHE COMMONS IO -->
+        <!-- Helper library for file operations (copying screenshots etc.) -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.15.1</version>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ==================== BUILD CONFIGURATION ==================== -->
+    <build>
+        <plugins>
+
+            <!-- MAVEN COMPILER PLUGIN -->
+            <!-- Tells Maven to compile with Java 17 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.12.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- MAVEN SUREFIRE PLUGIN -->
+            <!-- This plugin RUNS your TestNG tests via Maven -->
+            <!-- mvn test command uses this plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <!-- Points to TestNG XML suite file -->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
 
 </project>
