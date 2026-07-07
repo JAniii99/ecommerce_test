@@ -39,9 +39,9 @@ public class DriverFactory {
 
         if (ConfigReader.getBoolean("headless")) {
             log.info("Running in headless mode.");
-//            options.addArguments("--headless=new");
-//            options.addArguments("--no-sandbox");
-//            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--disable-gpu");
             options.addArguments("--disable-dev-shm-usage");
         }
