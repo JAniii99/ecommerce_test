@@ -1,5 +1,6 @@
 package com.ecommerce.pages;
 
+import com.ecommerce.utilities.AdHandler;
 import com.ecommerce.utilities.ConfigReader;
 import com.ecommerce.utilities.LoggerUtil;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +60,13 @@ public class LoginPage {
 
     public void clickLoginButton() {
         log.info("Clicking Login button.");
-        wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
+        // Remove ads before clicking - ads sometimes cover the login button
+        AdHandler.closeAds(driver);
+        WebElement btn = wait.until(
+                ExpectedConditions.elementToBeClickable(loginButton)
+        );
+        AdHandler.jsClick(driver, btn);
+        log.info("Clicked Login button via JS.");
     }
 
     public void loginWith(String email, String password) {

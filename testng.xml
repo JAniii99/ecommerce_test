@@ -27,4 +27,10 @@
         </classes>
     </test>
 
+    <test name="Checkout Tests">
+        <classes>
+            <class name="com.ecommerce.tests.CheckoutTest"/>
+        </classes>
+    </test>
+
 </suite>
