@@ -1,0 +1,6 @@
+testCase,email,password,expectedResult
+TC_LOGIN_01,janitha_test_2026@gmail.com,Abc@1234,success
+TC_LOGIN_02,janitha_test_2026@gmail.com,WrongPassword123,failure
+TC_LOGIN_03,invalidemail@notexist.com,SomePassword123,failure
+TC_LOGIN_04,,, failure
+TC_LOGIN_05,janitha_test_2026@gmail.com,,failure

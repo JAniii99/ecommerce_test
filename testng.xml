@@ -3,6 +3,10 @@
 
 <suite name="E-Commerce Automation Suite" verbose="1">
 
+    <listeners>
+        <listener class-name="com.ecommerce.utilities.RetryListener"/>
+    </listeners>
+
     <test name="Login Tests">
         <classes>
             <class name="com.ecommerce.tests.LoginTest"/>
@@ -30,6 +34,12 @@
     <test name="Checkout Tests">
         <classes>
             <class name="com.ecommerce.tests.CheckoutTest"/>
+        </classes>
+    </test>
+
+    <test name="Data Driven Login Tests">
+        <classes>
+            <class name="com.ecommerce.tests.LoginDataDrivenTest"/>
         </classes>
     </test>
 
