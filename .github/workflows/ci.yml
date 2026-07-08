@@ -1,0 +1,123 @@
+# ============================================================
+# GitHub Actions CI/CD Pipeline
+# E-Commerce Test Automation Framework
+# ============================================================
+# Triggers:
+#   - Every push to main branch
+#   - Every Pull Request to main branch
+#   - Manual trigger via GitHub UI (workflow_dispatch)
+# ============================================================
+
+name: E-Commerce Automation Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:    # Allows manual trigger from GitHub UI
+
+jobs:
+  test:
+    # Run on the latest Ubuntu (same as most CI/CD servers)
+    runs-on: ubuntu-latest
+
+    # Job name shown in GitHub Actions UI
+    name: Run Selenium Tests
+
+    steps:
+
+      # ── Step 1: Get the code ──────────────────────────────
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        # Clones your repo into the runner machine
+
+      # ── Step 2: Set up Java 17 ───────────────────────────
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          # Temurin = Eclipse's open-source JDK (same as Adoptium)
+
+      # ── Step 3: Cache Maven dependencies ─────────────────
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+        # Caches downloaded JARs so subsequent runs are faster
+        # Without cache: downloads ~50MB every run
+        # With cache: skips download if pom.xml hasn't changed
+
+      # ── Step 4: Install Google Chrome ────────────────────
+      - name: Install Google Chrome
+        run: |
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update -y
+          sudo apt-get install -y google-chrome-stable
+          google-chrome --version
+        # CI servers don't have Chrome by default
+        # We install it manually and verify the version
+
+      # ── Step 5: Create required directories ──────────────
+      - name: Create Output Directories
+        run: |
+          mkdir -p screenshots
+          mkdir -p reports
+          mkdir -p logs
+        # These folders are in .gitignore so they don't exist
+        # in the cloned repo — we create them before tests run
+
+      # ── Step 6: Set headless mode for CI ─────────────────
+      - name: Configure Headless Mode
+        run: |
+          sed -i 's/headless=false/headless=true/' src/test/resources/config.properties
+        # CI servers have no display — Chrome must run headless
+        # sed replaces headless=false with headless=true in config
+
+      # ── Step 7: Set test credentials from GitHub Secrets ─
+      - name: Configure Test Credentials
+        run: |
+          sed -i "s/valid.email=.*/valid.email=${{ secrets.TEST_EMAIL }}/" src/test/resources/config.properties
+          sed -i "s/valid.password=.*/valid.password=${{ secrets.TEST_PASSWORD }}/" src/test/resources/config.properties
+          sed -i "s/register.existing.email=.*/register.existing.email=${{ secrets.TEST_EMAIL }}/" src/test/resources/config.properties
+        # NEVER hardcode credentials in CI files
+        # GitHub Secrets encrypts and injects them safely
+
+      # ── Step 8: Run the tests ─────────────────────────────
+      - name: Run Automation Tests
+        run: mvn test
+        # Runs: mvn test → surefire → testng.xml → all 12 tests
+        # If any test fails, this step fails and pipeline is red
+
+      # ── Step 9: Upload Extent Report ─────────────────────
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        if: always()    # Upload even if tests fail — we want the report!
+        with:
+          name: extent-test-report
+          path: reports/
+          retention-days: 30
+        # Makes the HTML report downloadable from GitHub Actions UI
+
+      # ── Step 10: Upload Screenshots ───────────────────────
+      - name: Upload Failure Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()   # Only upload screenshots when tests fail
+        with:
+          name: failure-screenshots
+          path: screenshots/
+          retention-days: 30
+
+      # ── Step 11: Upload Logs ──────────────────────────────
+      - name: Upload Test Logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-logs
+          path: logs/
+          retention-days: 30
