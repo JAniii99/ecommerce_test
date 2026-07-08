@@ -21,4 +21,10 @@
         </classes>
     </test>
 
+    <test name="Cart Tests">
+        <classes>
+            <class name="com.ecommerce.tests.CartTest"/>
+        </classes>
+    </test>
+
 </suite>

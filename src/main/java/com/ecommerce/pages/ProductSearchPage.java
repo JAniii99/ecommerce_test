@@ -1,5 +1,6 @@
 package com.ecommerce.pages;
 
+import com.ecommerce.utilities.AdHandler;
 import com.ecommerce.utilities.ConfigReader;
 import com.ecommerce.utilities.LoggerUtil;
 import org.apache.logging.log4j.Logger;
@@ -69,11 +70,21 @@ public class ProductSearchPage {
      */
     public void navigateToProductsPage() {
         log.info("Navigating to Products page.");
-        wait.until(ExpectedConditions.elementToBeClickable(productsNavLink)).click();
 
-        // Wait for search input to confirm we're on the right page
-        wait.until(ExpectedConditions.visibilityOfElementLocated(searchInput));
-        log.info("Successfully landed on Products page.");
+        // Use JS click on nav link to avoid any ad interception
+        WebElement productsLink = wait.until(
+                ExpectedConditions.presenceOfElementLocated(productsNavLink)
+        );
+        AdHandler.jsClick(driver, productsLink);
+
+        // Wait longer for search input — products page is heavy
+        WebDriverWait longerWait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        longerWait.until(ExpectedConditions.visibilityOfElementLocated(searchInput));
+
+        // Remove ads after page loads
+        AdHandler.closeAds(driver);
+
+        log.info("Successfully landed on Products page - ads removed.");
     }
 
     /**
