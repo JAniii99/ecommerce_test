@@ -15,4 +15,10 @@
         </classes>
     </test>
 
+    <test name="Product Search Tests">
+        <classes>
+            <class name="com.ecommerce.tests.ProductSearchTest"/>
+        </classes>
+    </test>
+
 </suite>
